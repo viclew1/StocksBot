@@ -1,5 +1,3 @@
 package fr.lewon.bot.stocks.rest
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-data class StocksSession(@field: JsonProperty var token: String = "")
+data class StocksSession(val cTokenProd: String, val cTokenTest: String)

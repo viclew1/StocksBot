@@ -2,38 +2,38 @@ package fr.lewon.bot.stocks
 
 import fr.lewon.bot.runner.AbstractBotBuilder
 import fr.lewon.bot.runner.Bot
+import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
+import fr.lewon.bot.runner.bot.props.BotPropertyStore
+import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
 import fr.lewon.bot.runner.session.AbstractSessionManager
 import fr.lewon.bot.stocks.rest.StocksSessionManager
-import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import fr.lewon.bot.stocks.tasks.TestTask
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
-class StocksBotBuilder : AbstractBotBuilder(listOf(), listOf()) {
+class StocksBotBuilder : AbstractBotBuilder(
+        expectedLoginProperties = listOf(
+                BotPropertyDescriptor("CToken_PROD", BotPropertyType.STRING, null, "Token used on the production API. You can find it on your iexcloud user page.", isNeeded = true, isNullable = false),
+                BotPropertyDescriptor("CToken_TEST", BotPropertyType.STRING, null, "Token used on the sandbox API. You can find it on your iexcloud user page.", isNeeded = true, isNullable = false)
+        ),
+        botPropertyDescriptors = listOf(
+                BotPropertyDescriptor("test_mode", BotPropertyType.BOOLEAN, true, "Defines if the API used is the sandbox or the production one. true by default", isNeeded = false, isNullable = false, acceptedValues = listOf(true, false))
+        ),
+        botOperations = listOf()) {
 
-    override fun buildSessionManager(login: String, password: String): AbstractSessionManager {
-        return StocksSessionManager(login, password, WebClient.builder()
-                .codecs { c -> c.defaultCodecs().maxInMemorySize(-1) })
+    override fun buildSessionManager(login: String, loginPropertyStore: BotPropertyStore): AbstractSessionManager {
+        return StocksSessionManager(login, loginPropertyStore, WebClient.builder()
+                .codecs { c -> c.defaultCodecs().maxInMemorySize(-1) }
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
     }
 
     override fun getInitialTasks(bot: Bot): List<BotTask> {
-        return listOf()
+        return listOf(
+                TestTask(bot)
+        )
     }
 
-}
-
-@SpringBootApplication(scanBasePackages = ["fr.lewon.bot.runner"])
-open class BotManagerApp : CommandLineRunner {
-
-    override fun run(vararg args: String?) {
-        val sbb = StocksBotBuilder()
-        val bot = sbb.buildBot("viclew@gmail.com", "gGG7XtYZw-SVpsX", HashMap())
-        bot.sessionManager.buildSessionHolder()
-    }
-
-}
-
-fun main(args: Array<String>) {
-    runApplication<BotManagerApp>(*args)
 }
