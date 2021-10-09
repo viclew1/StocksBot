@@ -4,7 +4,8 @@ import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.session.AbstractSessionManager
 import org.springframework.web.reactive.function.client.WebClient
 
-class StocksSessionManager(login: String, loginPropertyStore: BotPropertyStore, webClientBuilder: WebClient.Builder) : AbstractSessionManager(login, loginPropertyStore, 2 * 3600 * 1000, webClientBuilder) {
+class StocksSessionManager(login: String, loginPropertyStore: BotPropertyStore, webClientBuilder: WebClient.Builder) :
+    AbstractSessionManager(login, loginPropertyStore, 2 * 3600 * 1000L, webClientBuilder) {
 
     override fun generateSessionObject(webClient: WebClient, login: String, loginPropertyStore: BotPropertyStore): Any {
         val cTokenProd = loginPropertyStore.getByKey("CToken_PROD") as String
