@@ -5,7 +5,7 @@
     <groupId>lewon.bot</groupId>
     <artifactId>StocksBot</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,8 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>fr.lewon</groupId>
-            <artifactId>SpringBotRunner</artifactId>
-            <version>1.0.0</version>
+            <artifactId>VLBotRunner</artifactId>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
